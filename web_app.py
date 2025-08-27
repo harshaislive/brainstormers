@@ -79,78 +79,121 @@ def index():
     """Main page with chat interface"""
     return render_template('chat.html')
 
+# Global conversation state
+conversation_state = []
+next_agent_index = 0  # 0=Alpha, 1=Beta, 2=Gamma
+
 @app.route('/brainstorm', methods=['POST'])
 def brainstorm():
-    """Process brainstorm request"""
+    """Process brainstorm request - sequential agent flow"""
+    global conversation_state, next_agent_index
+    
     try:
         data = request.json
         hypothesis = data.get('hypothesis', '')
         message = data.get('message', '')
-        conversation = data.get('conversation', [])
+        reset_conversation = data.get('reset', False)
+        
+        # Reset conversation if requested or new hypothesis
+        if reset_conversation or (hypothesis and not conversation_state):
+            conversation_state = [f"Hypothesis: {hypothesis}"] if hypothesis else []
+            next_agent_index = 0
         
         # Add human message to conversation
         if message:
-            conversation.append(f"You: {message}")
+            conversation_state.append(f"You: {message}")
+            next_agent_index = 0  # Reset to Alpha after human message
         
         # Format context
-        context = f"Hypothesis: {hypothesis}\n" + "\n".join(conversation)
+        context = "\n".join(conversation_state)
         
-        responses = []
+        # Define agent order: Alpha -> Beta -> Gamma
+        agents = [
+            (alpha, "Alpha 🔬"),
+            (beta, "Beta ⚡"), 
+            (gamma, "Gamma 🧠")
+        ]
         
-        # Get responses from each agent
-        if alpha and beta and gamma:
-            for agent, agent_name in [(alpha, "Alpha 🔬"), (beta, "Beta ⚡"), (gamma, "Gamma 🧠")]:
-                task = Task(
-                    description=f"""Conversation: {context}
-                    
-                    Provide a short response (2-3 sentences) based on your role and personality.""",
-                    agent=agent,
-                    expected_output="A short conversational response."
-                )
+        # Get response from current agent in sequence
+        if next_agent_index < len(agents) and agents[next_agent_index][0]:
+            agent, agent_name = agents[next_agent_index]
+            
+            task = Task(
+                description=f"""Conversation history: {context}
                 
-                crew = Crew(
-                    agents=[agent],
-                    tasks=[task],
-                    process=Process.sequential,
-                    verbose=False
-                )
-                
-                result = crew.kickoff(inputs={"context": context})
-                response_text = result.tasks_output[0].raw
-                
-                responses.append({
-                    'agent': agent_name,
-                    'text': response_text,
-                    'timestamp': get_timestamp()
-                })
-                
-                # Update context for next agent
-                conversation.append(f"{agent_name}: {response_text}")
-                context = f"Hypothesis: {hypothesis}\n" + "\n".join(conversation)
-        else:
+                Instructions:
+                - Provide scientifically rigorous response based on your role
+                - Use first principles thinking and expertise across all sciences  
+                - You can mention other agents with @Alpha, @Beta, @Gamma or the human with @You
+                - If someone mentioned you specifically with @, acknowledge and respond to them
+                - Keep it conversational but intellectually substantive (2-3 sentences max for web display)
+                - Agents can challenge each other directly!""",
+                agent=agent,
+                expected_output="A scientifically informed conversational response with potential @ mentions."
+            )
+            
+            crew = Crew(
+                agents=[agent],
+                tasks=[task],
+                process=Process.sequential,
+                verbose=False
+            )
+            
+            result = crew.kickoff(inputs={"context": context})
+            response_text = result.tasks_output[0].raw
+            
+            # Add agent response to conversation
+            conversation_state.append(f"{agent_name}: {response_text}")
+            
+            response = {
+                'success': True,
+                'agent': agent_name,
+                'text': response_text,
+                'timestamp': get_timestamp(),
+                'next_agent_index': next_agent_index + 1,
+                'conversation_complete': next_agent_index >= 2  # All 3 agents responded
+            }
+            
+            next_agent_index += 1
+            if next_agent_index >= 3:
+                next_agent_index = 0  # Ready for next human message
+            
+            return jsonify(response)
+            
+        elif next_agent_index < len(agents):
             # Demo mode without actual AI
-            responses = [
-                {
-                    'agent': 'Alpha 🔬',
-                    'text': "Ha! That hypothesis is about as stable as a house of cards in a hurricane! Let me explain why physics disagrees...",
-                    'timestamp': get_timestamp()
-                },
-                {
-                    'agent': 'Beta ⚡',
-                    'text': "The empirical evidence actually supports this hypothesis. Recent studies from MIT demonstrate clear correlations.",
-                    'timestamp': get_timestamp()
-                },
-                {
-                    'agent': 'Gamma 🧠',
-                    'text': "Like two rivers converging, both perspectives reveal truth. The answer lies not in either/or, but in the synthesis of both views.",
-                    'timestamp': get_timestamp()
-                }
+            demo_responses = [
+                "Ha! That hypothesis is about as stable as a house of cards in a hurricane! Let me explain why physics disagrees...",
+                "The empirical evidence actually supports this hypothesis. Recent studies from MIT demonstrate clear correlations.",
+                "Like two rivers converging, both perspectives reveal truth. The answer lies not in either/or, but in the synthesis of both views."
             ]
+            
+            agent_name = agents[next_agent_index][1]
+            response_text = demo_responses[next_agent_index]
+            
+            # Add agent response to conversation
+            conversation_state.append(f"{agent_name}: {response_text}")
+            
+            response = {
+                'success': True,
+                'agent': agent_name,
+                'text': response_text,
+                'timestamp': get_timestamp(),
+                'next_agent_index': next_agent_index + 1,
+                'conversation_complete': next_agent_index >= 2
+            }
+            
+            next_agent_index += 1
+            if next_agent_index >= 3:
+                next_agent_index = 0
+            
+            return jsonify(response)
         
-        return jsonify({
-            'success': True,
-            'responses': responses
-        })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'All agents have responded. Send a new message to continue.'
+            })
         
     except Exception as e:
         return jsonify({

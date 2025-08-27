@@ -247,8 +247,8 @@
             // Add initial hypothesis to chat
             addMessage('system', `🎯 Hypothesis: ${hypothesis}`, '');
             
-            // Send initial brainstorm request
-            sendBrainstorm('Let\'s discuss this hypothesis!');
+            // Send initial brainstorm request with reset
+            sendBrainstorm('Let\'s discuss this hypothesis!', true);
         }
         
         function sendMessage() {
@@ -262,14 +262,19 @@
             sendBrainstorm(message);
         }
         
-        function sendBrainstorm(message) {
+        function sendBrainstorm(message, reset = false) {
             isProcessing = true;
             document.getElementById('sendButton').disabled = true;
             
-            // Show loading
+            // Start the sequential agent conversation
+            triggerNextAgent(message, reset);
+        }
+        
+        function triggerNextAgent(message = '', reset = false) {
+            // Show loading for current agent
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'loading';
-            loadingDiv.innerHTML = '🤔 Agents are thinking...';
+            loadingDiv.innerHTML = '🤔 Agent is thinking...';
             document.getElementById('chatArea').appendChild(loadingDiv);
             
             fetch('/brainstorm', {
@@ -280,7 +285,7 @@
                 body: JSON.stringify({
                     hypothesis: hypothesis,
                     message: message,
-                    conversation: conversation
+                    reset: reset
                 })
             })
             .then(response => response.json())
@@ -289,17 +294,24 @@
                 loadingDiv.remove();
                 
                 if (data.success) {
-                    data.responses.forEach(response => {
-                        const agentClass = response.agent.toLowerCase().split(' ')[0];
-                        addMessage(agentClass, response.text, response.agent);
-                        conversation.push(`${response.agent}: ${response.text}`);
-                    });
+                    // Add the single agent response
+                    const agentClass = data.agent.toLowerCase().split(' ')[0];
+                    addMessage(agentClass, data.text, data.agent);
+                    
+                    // Check if conversation is complete (all 3 agents responded)
+                    if (!data.conversation_complete) {
+                        // Continue with next agent after a short delay
+                        setTimeout(() => triggerNextAgent(), 500);
+                    } else {
+                        // All agents done, ready for next human message
+                        isProcessing = false;
+                        document.getElementById('sendButton').disabled = false;
+                    }
                 } else {
                     addMessage('system', `Error: ${data.error}`, 'System');
+                    isProcessing = false;
+                    document.getElementById('sendButton').disabled = false;
                 }
-                
-                isProcessing = false;
-                document.getElementById('sendButton').disabled = false;
             })
             .catch(error => {
                 loadingDiv.remove();
