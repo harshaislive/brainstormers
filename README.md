@@ -93,10 +93,11 @@ Environment variables you can customize:
 ## 🌐 Web Deployment Ready
 
 This project is configured for easy deployment to platforms like:
-- Heroku
-- Railway
-- Render
-- DigitalOcean App Platform
+- **Railway** (recommended - excellent nixpacks support)
+- **Render** (great Python support)
+- **Coolify** (use Dockerfile method if nixpacks fails)
+- **DigitalOcean App Platform**
+- **Heroku**
 
 All sensitive configuration is handled via environment variables.
 
