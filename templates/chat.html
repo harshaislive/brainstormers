@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧠 Brainstormers</title>
+    <title>⚡ NEURAL NEXUS ⚡</title>
     <style>
         * {
             margin: 0;
@@ -11,193 +11,550 @@
             box-sizing: border-box;
         }
         
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Source+Code+Pro:wght@300;400;600&display=swap');
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Source Code Pro', 'Courier New', monospace;
+            background: #0a0a0f;
+            background-image: 
+                radial-gradient(circle at 25% 25%, #ff00ff22 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, #00ffff22 0%, transparent 50%),
+                linear-gradient(45deg, transparent 48%, #ff00ff11 49%, #ff00ff11 51%, transparent 52%);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            color: #00ffff;
+            overflow: hidden;
+            animation: cyberpunk-bg 20s ease-in-out infinite alternate;
+        }
+        
+        @keyframes cyberpunk-bg {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 255, 0.03) 2px,
+                rgba(0, 255, 255, 0.03) 4px
+            );
+            z-index: -1;
         }
         
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1c2128 100%);
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff) 1;
+            border-radius: 15px;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.3),
+                0 0 60px rgba(0, 255, 255, 0.2),
+                inset 0 0 50px rgba(255, 255, 255, 0.05);
             width: 100%;
-            max-width: 800px;
-            height: 600px;
+            max-width: 900px;
+            height: 700px;
             display: flex;
             flex-direction: column;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+            border-radius: 15px;
+            z-index: -1;
+            animation: border-glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes border-glow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 20px 20px 0 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-bottom: 2px solid #00ffff;
+            color: #00ffff;
+            padding: 25px;
+            border-radius: 15px 15px 0 0;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: scan-line 3s infinite;
+        }
+        
+        @keyframes scan-line {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
         
         .header h1 {
-            font-size: 24px;
+            font-family: 'Orbitron', monospace;
+            font-size: 28px;
+            font-weight: 900;
             margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 
+                0 0 10px #00ffff,
+                0 0 20px #00ffff,
+                0 0 30px #00ffff;
+            animation: text-flicker 2s infinite alternate;
+        }
+        
+        @keyframes text-flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
         
         .hypothesis-input {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 15px;
+            margin-top: 15px;
         }
         
         .hypothesis-input input {
             flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 25px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            placeholder-color: rgba(255,255,255,0.7);
+            padding: 15px;
+            border: 2px solid #ff00ff;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #00ffff;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 14px;
+            box-shadow: 
+                inset 0 0 10px rgba(255, 0, 255, 0.2),
+                0 0 10px rgba(255, 0, 255, 0.3);
         }
         
         .hypothesis-input input::placeholder {
-            color: rgba(255,255,255,0.7);
+            color: rgba(0, 255, 255, 0.6);
+        }
+        
+        .hypothesis-input input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 
+                inset 0 0 10px rgba(0, 255, 255, 0.2),
+                0 0 20px rgba(0, 255, 255, 0.5);
         }
         
         .hypothesis-input button {
-            padding: 10px 20px;
-            background: white;
-            color: #667eea;
+            padding: 15px 25px;
+            background: linear-gradient(45deg, #ff00ff, #ff0080);
+            color: white;
             border: none;
-            border-radius: 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .hypothesis-input button:hover {
+            background: linear-gradient(45deg, #ff0080, #ff00ff);
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.8);
+            transform: translateY(-2px);
         }
         
         .chat-area {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            background: #f8f9fa;
+            padding: 25px;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            border-top: 1px solid rgba(0, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .chat-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-area::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        
+        .chat-area::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border-radius: 4px;
         }
         
         .message {
-            margin-bottom: 15px;
-            animation: slideIn 0.3s ease;
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
         }
         
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateX(-20px);
+                filter: blur(5px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateX(0);
+                filter: blur(0);
             }
         }
         
-        .message.human {
-            text-align: right;
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
         }
         
-        .message.human .bubble {
-            background: #667eea;
+        .avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: avatar-shine 3s infinite;
+        }
+        
+        @keyframes avatar-shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .avatar.human {
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             margin-left: auto;
         }
         
+        .avatar.alpha {
+            background: linear-gradient(135deg, #ffff00, #ff8c00);
+            color: #000;
+            border: 2px solid #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.6);
+        }
+        
+        .avatar.beta {
+            background: linear-gradient(135deg, #00bfff, #0080ff);
+            color: white;
+            border: 2px solid #00bfff;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.6);
+        }
+        
+        .avatar.gamma {
+            background: linear-gradient(135deg, #00ff80, #00cc66);
+            color: #000;
+            border: 2px solid #00ff80;
+            box-shadow: 0 0 20px rgba(0, 255, 128, 0.6);
+        }
+        
+        .message.human {
+            flex-direction: row-reverse;
+        }
+        
+        .message.human .message-content {
+            align-items: flex-end;
+        }
+        
+        .message.human .bubble {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .message-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            max-width: 70%;
+        }
+        
         .message .agent-name {
             font-size: 12px;
-            color: #666;
-            margin-bottom: 5px;
+            color: #00ffff;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px #00ffff;
         }
         
         .message .bubble {
-            display: inline-block;
-            padding: 12px 16px;
-            border-radius: 18px;
-            background: white;
-            max-width: 70%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px 20px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+            color: #e0e0e0;
+            font-size: 14px;
+            line-height: 1.6;
+            position: relative;
+            overflow: hidden;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        
+        .message .bubble::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: message-scan 4s infinite;
+        }
+        
+        @keyframes message-scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
         
         .message.alpha .bubble {
-            background: #fff3cd;
+            border-color: rgba(255, 255, 0, 0.5);
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 0 20px rgba(255, 255, 0, 0.1),
+                0 0 10px rgba(255, 255, 0, 0.3);
         }
         
         .message.beta .bubble {
-            background: #d1ecf1;
+            border-color: rgba(0, 191, 255, 0.5);
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 0 20px rgba(0, 191, 255, 0.1),
+                0 0 10px rgba(0, 191, 255, 0.3);
         }
         
         .message.gamma .bubble {
-            background: #d4edda;
+            border-color: rgba(0, 255, 128, 0.5);
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 0 20px rgba(0, 255, 128, 0.1),
+                0 0 10px rgba(0, 255, 128, 0.3);
         }
         
         .timestamp {
             font-size: 10px;
-            color: #999;
-            margin-top: 3px;
+            color: rgba(0, 255, 255, 0.6);
+            margin-top: 8px;
+            font-family: 'Source Code Pro', monospace;
+            text-align: right;
         }
         
         .input-area {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-            border-radius: 0 0 20px 20px;
+            padding: 25px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-top: 2px solid #00ffff;
+            border-radius: 0 0 15px 15px;
+            position: relative;
+        }
+        
+        .input-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            animation: input-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes input-glow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
         
         .input-form {
             display: flex;
-            gap: 10px;
+            gap: 15px;
         }
         
         .input-form input {
             flex: 1;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 25px;
+            padding: 15px 20px;
+            border: 2px solid #ff00ff;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #00ffff;
+            font-family: 'Source Code Pro', monospace;
             font-size: 14px;
+            box-shadow: 
+                inset 0 0 10px rgba(255, 0, 255, 0.2),
+                0 0 10px rgba(255, 0, 255, 0.3);
+        }
+        
+        .input-form input::placeholder {
+            color: rgba(0, 255, 255, 0.6);
+        }
+        
+        .input-form input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 
+                inset 0 0 10px rgba(0, 255, 255, 0.2),
+                0 0 20px rgba(0, 255, 255, 0.5);
         }
         
         .input-form button {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff00ff, #ff0080);
             color: white;
             border: none;
-            border-radius: 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .input-form button:hover {
+            background: linear-gradient(45deg, #ff0080, #ff00ff);
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.8);
+            transform: translateY(-2px);
         }
         
         .input-form button:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
+            background: #333;
+            box-shadow: none;
+            transform: none;
         }
         
         .loading {
             text-align: center;
             padding: 20px;
-            color: #666;
+            color: #00ffff;
+            font-family: 'Orbitron', monospace;
+            animation: loading-pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes loading-pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes loading-dots {
+            0%, 20% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
         }
         
         .start-screen {
             text-align: center;
-            padding: 40px;
-            color: #666;
+            padding: 50px 30px;
+            color: #00ffff;
         }
         
         .start-screen h2 {
-            color: #333;
-            margin-bottom: 10px;
+            color: #00ffff;
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .start-screen p {
+            font-family: 'Source Code Pro', monospace;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .agent-intro {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .agent-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid;
+            border-radius: 10px;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .agent-card.alpha {
+            border-color: #ffff00;
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.3);
+        }
+        
+        .agent-card.beta {
+            border-color: #00bfff;
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
+        }
+        
+        .agent-card.gamma {
+            border-color: #00ff80;
+            box-shadow: 0 0 15px rgba(0, 255, 128, 0.3);
+        }
+        
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧠 Brainstormers</h1>
+            <h1>⚡ NEURAL NEXUS ⚡</h1>
             <div class="hypothesis-input" id="hypothesisSection">
                 <input type="text" id="hypothesisInput" placeholder="Enter your hypothesis or topic..." />
                 <button onclick="startBrainstorm()">Start</button>
@@ -207,13 +564,25 @@
         
         <div class="chat-area" id="chatArea">
             <div class="start-screen">
-                <h2>Welcome to Brainstormers!</h2>
+                <h2>Welcome to Neural Nexus!</h2>
                 <p>Enter a hypothesis above to start a debate with three AI scientists:</p>
-                <p style="margin-top:20px;">
-                    🔬 <strong>Alpha</strong> - The Humorous Skeptic<br>
-                    ⚡ <strong>Beta</strong> - The Serious Advocate<br>
-                    🧠 <strong>Gamma</strong> - The Zen Synthesizer
-                </p>
+                <div class="agent-intro">
+                    <div class="agent-card alpha">
+                        <div class="avatar alpha">🔬</div>
+                        <h3>ALPHA</h3>
+                        <p>The Humorous Skeptic</p>
+                    </div>
+                    <div class="agent-card beta">
+                        <div class="avatar beta">⚡</div>
+                        <h3>BETA</h3>
+                        <p>The Serious Advocate</p>
+                    </div>
+                    <div class="agent-card gamma">
+                        <div class="avatar gamma">🧠</div>
+                        <h3>GAMMA</h3>
+                        <p>The Zen Synthesizer</p>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -245,7 +614,7 @@
             document.getElementById('chatArea').innerHTML = '';
             
             // Add initial hypothesis to chat
-            addMessage('system', `🎯 Hypothesis: ${hypothesis}`, '');
+            addMessage('system', `🎯 HYPOTHESIS LOADED: ${hypothesis}`, '');
             
             // Send initial brainstorm request with reset
             sendBrainstorm('Let\'s discuss this hypothesis!', true);
@@ -274,7 +643,7 @@
             // Show loading for current agent
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'loading';
-            loadingDiv.innerHTML = '🤔 Agent is thinking...';
+            loadingDiv.innerHTML = '<span style="animation: loading-dots 1.5s infinite;">⚡ NEURAL PROCESSING</span><span style="animation: loading-dots 1.5s infinite 0.5s;">.</span><span style="animation: loading-dots 1.5s infinite 1s;">.</span><span style="animation: loading-dots 1.5s infinite 1.5s;">.</span>';
             document.getElementById('chatArea').appendChild(loadingDiv);
             
             fetch('/brainstorm', {
@@ -321,19 +690,40 @@
             });
         }
         
+        function getAvatarEmoji(type) {
+            const avatars = {
+                'alpha': '🔬',
+                'beta': '⚡',
+                'gamma': '🧠',
+                'human': '👤',
+                'system': '⚙️'
+            };
+            return avatars[type] || '🤖';
+        }
+        
         function addMessage(type, text, agent) {
             const chatArea = document.getElementById('chatArea');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
             
-            if (agent) {
+            const avatar = getAvatarEmoji(type);
+            
+            if (agent && type !== 'system') {
                 messageDiv.innerHTML = `
-                    <div class="agent-name">${agent}</div>
-                    <div class="bubble">${text}</div>
-                    <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+                    <div class="avatar ${type}">${avatar}</div>
+                    <div class="message-content">
+                        <div class="agent-name">${agent}</div>
+                        <div class="bubble">${text}</div>
+                        <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+                    </div>
                 `;
             } else {
-                messageDiv.innerHTML = `<div class="bubble">${text}</div>`;
+                messageDiv.innerHTML = `
+                    <div class="avatar ${type}">${avatar}</div>
+                    <div class="message-content">
+                        <div class="bubble">${text}</div>
+                    </div>
+                `;
             }
             
             chatArea.appendChild(messageDiv);
