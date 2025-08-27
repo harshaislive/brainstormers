@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 """
 Web-compatible version of Brainstormers for deployment
-Uses the terminal interface as the main entry point
+Now uses Flask web interface instead of terminal
 """
 
 import os
-from brainstorm_crew import main
 
+# Run the web interface for deployments
 if __name__ == "__main__":
-    # For web deployment, run the terminal version
-    print("🌐 Running Brainstormers in web mode...")
-    print("Note: This runs the terminal interface. For GUI, run locally with 'python brainstorm_gui.py'")
+    from web_app import app
     
-    # Check if password is required
-    if os.getenv("APP_PASSWORD"):
-        print("🔐 Password protection is enabled")
+    print("🌐 Starting Brainstormers Web Interface...")
+    port = int(os.getenv('PORT', 8080))
+    print(f"✅ Server running on port {port}")
     
-    main()
+    # Note: Don't use debug=True in production
+    app.run(host='0.0.0.0', port=port, debug=False)

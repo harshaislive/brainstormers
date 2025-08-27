@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Brainstormers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 800px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .hypothesis-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .hypothesis-input input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            placeholder-color: rgba(255,255,255,0.7);
+        }
+        
+        .hypothesis-input input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .hypothesis-input button {
+            padding: 10px 20px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.human {
+            text-align: right;
+        }
+        
+        .message.human .bubble {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+        
+        .message .agent-name {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .message .bubble {
+            display: inline-block;
+            padding: 12px 16px;
+            border-radius: 18px;
+            background: white;
+            max-width: 70%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .message.alpha .bubble {
+            background: #fff3cd;
+        }
+        
+        .message.beta .bubble {
+            background: #d1ecf1;
+        }
+        
+        .message.gamma .bubble {
+            background: #d4edda;
+        }
+        
+        .timestamp {
+            font-size: 10px;
+            color: #999;
+            margin-top: 3px;
+        }
+        
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .input-form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-form input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+        }
+        
+        .input-form button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .input-form button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .start-screen h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Brainstormers</h1>
+            <div class="hypothesis-input" id="hypothesisSection">
+                <input type="text" id="hypothesisInput" placeholder="Enter your hypothesis or topic..." />
+                <button onclick="startBrainstorm()">Start</button>
+            </div>
+            <div id="currentHypothesis" style="display:none; margin-top:10px; font-size:14px;"></div>
+        </div>
+        
+        <div class="chat-area" id="chatArea">
+            <div class="start-screen">
+                <h2>Welcome to Brainstormers!</h2>
+                <p>Enter a hypothesis above to start a debate with three AI scientists:</p>
+                <p style="margin-top:20px;">
+                    🔬 <strong>Alpha</strong> - The Humorous Skeptic<br>
+                    ⚡ <strong>Beta</strong> - The Serious Advocate<br>
+                    🧠 <strong>Gamma</strong> - The Zen Synthesizer
+                </p>
+            </div>
+        </div>
+        
+        <div class="input-area" id="inputArea" style="display:none;">
+            <div class="input-form">
+                <input type="text" id="messageInput" placeholder="Type your message..." />
+                <button id="sendButton" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let hypothesis = '';
+        let conversation = [];
+        let isProcessing = false;
+        
+        function startBrainstorm() {
+            hypothesis = document.getElementById('hypothesisInput').value.trim();
+            if (!hypothesis) {
+                alert('Please enter a hypothesis or topic!');
+                return;
+            }
+            
+            // Update UI
+            document.getElementById('hypothesisSection').style.display = 'none';
+            document.getElementById('currentHypothesis').style.display = 'block';
+            document.getElementById('currentHypothesis').textContent = `Topic: ${hypothesis}`;
+            document.getElementById('inputArea').style.display = 'block';
+            document.getElementById('chatArea').innerHTML = '';
+            
+            // Add initial hypothesis to chat
+            addMessage('system', `🎯 Hypothesis: ${hypothesis}`, '');
+            
+            // Send initial brainstorm request
+            sendBrainstorm('Let\'s discuss this hypothesis!');
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message || isProcessing) return;
+            
+            input.value = '';
+            addMessage('human', message, 'You');
+            sendBrainstorm(message);
+        }
+        
+        function sendBrainstorm(message) {
+            isProcessing = true;
+            document.getElementById('sendButton').disabled = true;
+            
+            // Show loading
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.innerHTML = '🤔 Agents are thinking...';
+            document.getElementById('chatArea').appendChild(loadingDiv);
+            
+            fetch('/brainstorm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    hypothesis: hypothesis,
+                    message: message,
+                    conversation: conversation
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove loading
+                loadingDiv.remove();
+                
+                if (data.success) {
+                    data.responses.forEach(response => {
+                        const agentClass = response.agent.toLowerCase().split(' ')[0];
+                        addMessage(agentClass, response.text, response.agent);
+                        conversation.push(`${response.agent}: ${response.text}`);
+                    });
+                } else {
+                    addMessage('system', `Error: ${data.error}`, 'System');
+                }
+                
+                isProcessing = false;
+                document.getElementById('sendButton').disabled = false;
+            })
+            .catch(error => {
+                loadingDiv.remove();
+                addMessage('system', `Error: ${error}`, 'System');
+                isProcessing = false;
+                document.getElementById('sendButton').disabled = false;
+            });
+        }
+        
+        function addMessage(type, text, agent) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            if (agent) {
+                messageDiv.innerHTML = `
+                    <div class="agent-name">${agent}</div>
+                    <div class="bubble">${text}</div>
+                    <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `<div class="bubble">${text}</div>`;
+            }
+            
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+        
+        // Allow Enter key to send
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        document.getElementById('hypothesisInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startBrainstorm();
+            }
+        });
+    </script>
+</body>
+</html>
