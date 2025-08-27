@@ -1,0 +1,6 @@
+# Simplified requirements for deployment compatibility
+crewai
+langchain-openai
+python-dotenv
+openai
+pydantic

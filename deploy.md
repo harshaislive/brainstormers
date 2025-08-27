@@ -2,26 +2,31 @@
 
 ## Coolify Deployment Issues
 
-### Issue: `pip: command not found`
+### Issue 1: `pip: command not found`
+**Solution:** Use Dockerfile build method in Coolify instead of nixpacks.
+
+### Issue 2: `Could not find version crewai==0.165.1` + Python version conflicts
+
+**Root cause:** CrewAI version conflicts with Python versions in deployment environment.
 
 **Solutions (try in order):**
 
-### 1. Use Dockerfile instead of nixpacks
-In Coolify, change build method to "Dockerfile" instead of nixpacks.
+### 1. Use Simple Dockerfile (Recommended)
+Replace your Dockerfile with `Dockerfile.simple` content - installs latest compatible versions without strict pinning.
 
-### 2. Update nixpacks configuration
-Use the updated `nixpacks.toml` that includes pip package explicitly.
+### 2. Use Flexible Requirements  
+Use `requirements-simple.txt` instead:
+```bash
+# In Coolify build settings:
+pip install -r requirements-simple.txt
+```
 
-### 3. Use Python buildpack
-Set these environment variables in Coolify:
-```
-NIXPACKS_BUILD_CMD=python -m pip install -r requirements.txt
-NIXPACKS_START_CMD=python app.py
-```
+### 3. Updated Python Version
+All configs now use Python 3.11 (CrewAI compatible).
 
 ### 4. Manual Docker build
 ```bash
-docker build -t brainstormers .
+docker build -f Dockerfile.simple -t brainstormers .
 docker run -p 8000:8000 brainstormers
 ```
 
