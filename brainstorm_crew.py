@@ -13,6 +13,14 @@ def authenticate():
     if not required_password:
         return True  # No password required
     
+    # Check if running in non-interactive environment (like web deployment)
+    import sys
+    if not sys.stdin.isatty():
+        print("❌ Error: Password authentication not supported in non-interactive deployment")
+        print("Please remove APP_PASSWORD environment variable for web deployment")
+        print("Or use a web-based authentication method instead")
+        return False
+    
     print("🔐 Authentication Required")
     entered_password = getpass("Enter password: ")
     
@@ -27,7 +35,14 @@ def authenticate():
 # Set environment variables for LiteLLM to use Azure
 api_key = os.getenv("AZURE_OPENAI_API_KEY")
 if not api_key:
-    api_key = getpass("Enter your Azure OpenAI API key: ")
+    # Check if running in a non-interactive environment (like deployment)
+    import sys
+    if not sys.stdin.isatty():
+        print("❌ Error: AZURE_OPENAI_API_KEY environment variable is required for deployment")
+        print("Please set it in your deployment platform's environment variables")
+        exit(1)
+    else:
+        api_key = getpass("Enter your Azure OpenAI API key: ")
     
 os.environ["AZURE_API_KEY"] = api_key
 os.environ["AZURE_API_BASE"] = os.getenv("AZURE_API_BASE", "https://harsh-mdpv63be-eastus2.cognitiveservices.azure.com/")
