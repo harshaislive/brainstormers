@@ -11,4 +11,9 @@ if __name__ == "__main__":
     # For web deployment, run the terminal version
     print("🌐 Running Brainstormers in web mode...")
     print("Note: This runs the terminal interface. For GUI, run locally with 'python brainstorm_gui.py'")
+    
+    # Check if password is required
+    if os.getenv("APP_PASSWORD"):
+        print("🔐 Password protection is enabled")
+    
     main()

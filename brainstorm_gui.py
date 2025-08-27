@@ -10,6 +10,26 @@ from crewai import LLM
 def get_timestamp():
     return datetime.now().strftime("%I:%M %p")
 
+def authenticate_gui():
+    """Check password if APP_PASSWORD is set in environment"""
+    required_password = os.getenv("APP_PASSWORD")
+    if not required_password:
+        return True  # No password required
+    
+    # Simple password dialog
+    password = tk.simpledialog.askstring(
+        "Authentication Required", 
+        "🔐 Enter password:",
+        show='*'
+    )
+    
+    if password == required_password:
+        messagebox.showinfo("Access Granted", "✅ Welcome to Brainstormers!")
+        return True
+    else:
+        messagebox.showerror("Access Denied", "❌ Incorrect password!")
+        return False
+
 # Azure OpenAI config for LiteLLM (which CrewAI uses internally)
 # Set environment variables for LiteLLM to use Azure
 api_key = os.getenv("AZURE_OPENAI_API_KEY")
@@ -252,6 +272,14 @@ import tkinter.simpledialog
 
 def main():
     root = tk.Tk()
+    root.withdraw()  # Hide main window during authentication
+    
+    # Authentication check
+    if not authenticate_gui():
+        root.quit()
+        return
+    
+    root.deiconify()  # Show main window after authentication
     app = BrainstormGUI(root)
     root.mainloop()
 

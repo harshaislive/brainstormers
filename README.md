@@ -17,6 +17,7 @@ All three agents possess Einstein-level intellect across all scientific discipli
 - **Scientific Rigor**: All responses grounded in real scientific principles and evidence
 - **Two Interfaces**: Terminal CLI or simple GUI
 - **Real-time Flow**: You → Alpha → Beta → Gamma → repeat
+- **Password Protection**: Optional password authentication via environment variable
 
 ## 🛠️ Setup
 
@@ -38,6 +39,7 @@ AZURE_OPENAI_API_KEY=your_azure_openai_api_key_here
 AZURE_API_BASE=https://your-resource.cognitiveservices.azure.com/
 AZURE_API_VERSION=2024-08-01-preview
 AZURE_MODEL_NAME=your-deployment-name
+APP_PASSWORD=your_secure_password_here  # Optional: enables password protection
 ```
 
 ## 🎮 Usage
@@ -83,6 +85,7 @@ Environment variables you can customize:
 - `AZURE_API_BASE`: Your Azure OpenAI endpoint
 - `AZURE_API_VERSION`: API version to use
 - `AZURE_MODEL_NAME`: Your deployment name
+- `APP_PASSWORD`: Optional password for access control
 - `TEMPERATURE`: Response creativity (0.0-2.0, default: 1.0)
 - `MAX_TOKENS`: Maximum response length (default: 16384)
 - `TOP_P`: Nucleus sampling parameter (default: 1.0)
@@ -96,6 +99,25 @@ This project is configured for easy deployment to platforms like:
 - DigitalOcean App Platform
 
 All sensitive configuration is handled via environment variables.
+
+## 🔐 Security
+
+### Password Protection
+Set `APP_PASSWORD` in your environment to enable password authentication:
+
+```env
+APP_PASSWORD=my_secure_password_123
+```
+
+**How it works:**
+- **Terminal**: Prompts for password on startup (hidden input)
+- **GUI**: Shows password dialog box before main window
+- **No Password Set**: App runs without authentication (default behavior)
+
+**Deployment Security:**
+- All sensitive data (API keys, passwords) stored as environment variables
+- `.env` files are git-ignored to prevent accidental commits
+- Password input is always hidden/masked
 
 ## 📁 Project Structure
 

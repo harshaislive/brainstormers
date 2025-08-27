@@ -7,6 +7,22 @@ from crewai import LLM
 def get_timestamp():
     return datetime.now().strftime("%I:%M %p")
 
+def authenticate():
+    """Check password if APP_PASSWORD is set in environment"""
+    required_password = os.getenv("APP_PASSWORD")
+    if not required_password:
+        return True  # No password required
+    
+    print("🔐 Authentication Required")
+    entered_password = getpass("Enter password: ")
+    
+    if entered_password == required_password:
+        print("✅ Access granted!")
+        return True
+    else:
+        print("❌ Access denied!")
+        return False
+
 # Azure OpenAI config for LiteLLM (which CrewAI uses internally)
 # Set environment variables for LiteLLM to use Azure
 api_key = os.getenv("AZURE_OPENAI_API_KEY")
@@ -75,6 +91,10 @@ gamma = Agent(
 
 # Main terminal app
 def main():
+    # Authentication check
+    if not authenticate():
+        exit(1)
+    
     print("\n" + "="*50)
     print("🧠 BRAINSTORM GROUP CHAT")
     print("="*50)
