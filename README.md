@@ -47,10 +47,16 @@ AZURE_MODEL_NAME=your-deployment-name
 python brainstorm_crew.py
 ```
 
-### GUI Interface
+### GUI Interface (Local only)
 ```bash
 python brainstorm_gui.py
 ```
+
+### Web Deployment
+```bash
+python app.py
+```
+*Note: Web deployments use the terminal interface. GUI is only available locally.*
 
 ## 💬 Example Session
 
